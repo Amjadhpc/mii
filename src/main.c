@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
             if (!fgets(line, sizeof line, stdin)) {
                 fprintf(stderr, "[mii] No selection made! Quitting\n");
                 return 1;
-                exit() 
+                exit(0);
             }
 
             /* default to first option */
