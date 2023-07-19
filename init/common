@@ -1,7 +1,7 @@
 # mii common handler
-
+export SOURCED=0
 # return if not interactive or sourced
-if [[ $- != *i* ]] || [[ "$SOURCED" = "1" ]]; then
+if [[ $- != *i* ]] && [[ "$SOURCED" = "1" ]]; then
     exec echo $0: $(printf "$(gettext bash '%s: command not found')" $1) 1>&2
 fi
 
