@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
 
             if (!fgets(line, sizeof line, stdin)) {
                 fprintf(stderr, "[mii] No selection made!\n");
-                return 0;
+                return 1;
             }
 
             /* default to first option */
