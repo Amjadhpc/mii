@@ -198,8 +198,9 @@ int main(int argc, char** argv) {
             char line[4] = {0};
 
             if (!fgets(line, sizeof line, stdin)) {
-                fprintf(stderr, "[mii] No selection made!\n");
+                fprintf(stderr, "[mii] No selection made! Quitting\n");
                 return 1;
+                exit() 
             }
 
             /* default to first option */
