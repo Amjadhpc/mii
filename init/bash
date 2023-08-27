@@ -5,10 +5,10 @@
 #[[ ! $- == *i* ]] && return
 
 # find a modules installation
-if ! type module 2>&1 >/dev/null; then
-    echo "[mii] Couldn't find a 'module' command. Disabling!" 1>&2
-    return
-fi
+#if ! type module 2>&1 >/dev/null; then
+ #   echo "[mii] Couldn't find a 'module' command. Disabling!" 1>&2
+  #  return
+#fi
 
 # get directory of this script
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
