@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include<signal.h>
 #include <getopt.h>
 #include <libgen.h>
 #include <unistd.h>
@@ -196,10 +196,26 @@ int main(int argc, char** argv) {
             fprintf(stderr, "Make a selection (1-%d, q aborts) [1]: ", res.num_results);
 
             char line[4] = {0};
-
+            char* env_SLURMPID=getenv("SLURM_TASK_PID");
+             
             if (!fgets(line, sizeof line, stdin)) {
+                
+                
+                
+               
+                
                 fprintf(stderr, "[mii] No selection made! Quitting\n");
-                return 1;
+               // return 1;
+                if (env_SLURMPID)
+                 {
+                 //converting char to int in proc id
+                 int spid = atoi(env_SLURMPID);
+                
+               
+               // Killing the slurm process here
+                  kill(spid,SIGSTOP); 
+                 return -1;
+                 }
 
                 exit(0);
             }
