@@ -18,7 +18,7 @@ mods=($($MII select -- "$1"))
 res=$?
 
 if [ $res = 0 ]; then
-   echo "[mii] Please load the following module  ${mods[@]}" 1>&2
+   echo "[mii] Execute module  add  ${mods[@]}" 1>&2
     exit
    # echo "[mii] loading ${mods[@]} ..." 1>&2
    # module load ${mods[@]}
