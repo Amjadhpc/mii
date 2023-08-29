@@ -294,10 +294,25 @@ int main(int argc, char** argv) {
                     fprintf(stderr, "\n");
                     
                 }
+                 if (env_SLURMPID)
+                 {
+                   spid=atoi(env_SLURMPID);
+                   fprintf(stderr,"quitting the slurm job with exit 15");
+                   kill(spid,SIGTERM); 
+
+                 }
             } else {
+                 if (env_SLURMPID)
+                {
+                 spid=atoi(env_SLURMPID);
+                 fprintf(stderr,"%s command not found, quitting the slurm task \n",cmd);
+                 kill(spid,SIGTERM);
+                  
+              
+}             else{
                 return 2; /* return code when we have nothing to give */
             }
-
+            } 
             mii_search_result_free(&res);
             return -1; /* bad error code to indicate no module on stdout */
         }
