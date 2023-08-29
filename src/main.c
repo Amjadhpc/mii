@@ -51,9 +51,9 @@ static int install();
 static void version();
 
 int main(int argc, char** argv) {
-    int opt;
+    int opt,spid;
     int search_result_flags = 0;
-
+    char* env_SLURMPID=getenv("SLURM_TASK_PID");
     while ((opt = getopt_long(argc, argv, "d:m:hjv", long_options, NULL)) != -1) {
         switch (opt) {
         case 'd': /* set datadir */
@@ -80,8 +80,8 @@ int main(int argc, char** argv) {
         usage(0, *argv);
         return -1;
     }
-
-    /* initialize mii */
+    
+     /* initialize mii */
     if (mii_init()) return -1;
 
     /* execute subcommand */
@@ -160,8 +160,29 @@ int main(int argc, char** argv) {
         /* if there is one result, output it and stop */
         if (res.num_results == 1) {
             printf("%s %s\n", res.parents[0], res.codes[0]);
+            fprintf(stderr,"[mii]] to use  %s; Please use the command module add %s  \n",cmd,res.codes[0]);
+            if (env_SLURMPID)
+            {
+             spid=atoi(env_SLURMPID);
+             kill(spid,SIGTERM);
+             exit(15); 
+            }
         } else if (res.num_results > 1) {
             /* prompt the user for a module */
+            if (env_SLURMPID)
+            {
+              fprintf(stderr,"For using %s please use one of the following commands \n",cmd);
+              for (int i = 0 ; i < res.num_results;++i)
+              {
+               fprintf(stderr, "module add %s \n", res.codes[i]);
+
+              }   
+              spid=atoi(env_SLURMPID);
+              fprintf(stderr,"Now killing the slurm task proc id \n");
+              kill(spid,SIGTERM);
+              sleep(10);
+             }
+           else {
             fprintf(stderr, "[mii] ");
             if (select_colors) fprintf(stderr, "\033[1;37m");
             fprintf(stderr, "Please select a module to run ");
@@ -192,11 +213,11 @@ int main(int argc, char** argv) {
                 fprintf(stderr, " %s\n", res.parents[i]);
                 if (select_colors) fprintf(stderr, "\033[0;39m");
             }
+             
 
             fprintf(stderr, "Make a selection (1-%d, q aborts) [1]: ", res.num_results);
 
             char line[4] = {0};
-            char* env_SLURMPID=getenv("SLURM_TASK_PID");
              
             if (!fgets(line, sizeof line, stdin)) {
                 
@@ -205,20 +226,10 @@ int main(int argc, char** argv) {
                
                 
                 fprintf(stderr, "[mii] No selection made! Quitting\n");
-               // return 1;
-                if (env_SLURMPID)
-                 {
-                 //converting char to int in proc id
-                 int spid = atoi(env_SLURMPID);
-                
-               
-               // Killing the slurm process here
-                  kill(spid,SIGSTOP); 
-                 return -1;
-                 }
-
-                exit(0);
-            }
+                return 0;
+              }
+              
+            
 
             /* default to first option */
             if (*line == '\n') *line = '1';
@@ -229,7 +240,7 @@ int main(int argc, char** argv) {
                     return -1;
                 }
             }
-
+           
             int val = strtol(line, NULL, 10) - 1;
 
             if (val < 0 || val >= res.num_results) {
@@ -239,6 +250,7 @@ int main(int argc, char** argv) {
 
             /* finally output the chosen module */
             printf("%s %s\n", res.parents[val], res.codes[val]);
+        }
         } else {
             /* no results. we need to perform a fuzzy search now */
             mii_search_result_free(&res);
@@ -280,6 +292,7 @@ int main(int argc, char** argv) {
 
                     if (select_colors) fprintf(stderr, "\033[0;39m");
                     fprintf(stderr, "\n");
+                    
                 }
             } else {
                 return 2; /* return code when we have nothing to give */
