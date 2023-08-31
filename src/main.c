@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
     int opt,spid;
     int search_result_flags = 0;
     char* env_SLURMPID=getenv("SLURM_TASK_PID");
+    char* env_SLURMPARTITION=getenv("SLURM_JOB_PARTITION");
     while ((opt = getopt_long(argc, argv, "d:m:hjv", long_options, NULL)) != -1) {
         switch (opt) {
         case 'd': /* set datadir */
@@ -161,7 +162,7 @@ int main(int argc, char** argv) {
         if (res.num_results == 1) {
             printf("%s %s\n", res.parents[0], res.codes[0]);
             fprintf(stderr,"[mii]] to use  %s; Please use the command module add %s  \n",cmd,res.codes[0]);
-            if (env_SLURMPID)
+            if (env_SLURMPID && (strcmp(env_SLURMPARTITION,"interactive")))
             {
              spid=atoi(env_SLURMPID);
              kill(spid,SIGTERM);
@@ -169,7 +170,7 @@ int main(int argc, char** argv) {
             }
         } else if (res.num_results > 1) {
             /* prompt the user for a module */
-            if (env_SLURMPID)
+            if (env_SLURMPID && (strcmp(env_SLURMPARTITION, "interactive")))
             {
               fprintf(stderr,"For using %s please use one of the following commands \n",cmd);
               for (int i = 0 ; i < res.num_results;++i)
@@ -294,7 +295,7 @@ int main(int argc, char** argv) {
                     fprintf(stderr, "\n");
                     
                 }
-                 if (env_SLURMPID)
+                 if (env_SLURMPID && (strcmp(env_SLURMPARTITION,"interactive")))
                  {
                    spid=atoi(env_SLURMPID);
                    fprintf(stderr,"quitting the slurm job with exit 15");
@@ -302,7 +303,7 @@ int main(int argc, char** argv) {
 
                  }
             } else {
-                 if (env_SLURMPID)
+                 if (env_SLURMPID && (strcmp(env_SLURMPARTITION,"interactive" )))
                 {
                  spid=atoi(env_SLURMPID);
                  fprintf(stderr,"%s command not found, quitting the slurm task \n",cmd);
