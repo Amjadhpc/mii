@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
         if (res.num_results == 1) {
             printf("%s %s\n", res.parents[0], res.codes[0]);
             fprintf(stderr,"[mii]] to use  %s; Please use the command module add %s  \n",cmd,res.codes[0]);
-            if (env_SLURMPID && (strcmp(env_SLURMPARTITION,"interactive")))
+            if (env_SLURMPID && (strcmp(env_SLURMPARTITION,"interactive")) && !(strstr(env_SLURMJOBNAME,"sys/dashboard")))
             {
              spid=atoi(env_SLURMPID);
              kill(spid,SIGTERM);
