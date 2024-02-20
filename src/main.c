@@ -227,8 +227,8 @@ int main(int argc, char** argv) {
                 if (select_colors) fprintf(stderr, "\033[0;39m");
             }
              
-
-            fprintf(stderr, "Make a selection (1-%d, q aborts) [1]: ", res.num_results);
+            //newsoftware = res.num_results + 1;
+            fprintf(stderr, "Make a selection (1-%d, n new software , q aborts ) [1]: ", res.num_results);
 
             char line[4] = {0};
              
@@ -246,16 +246,23 @@ int main(int argc, char** argv) {
 
             /* default to first option */
             if (*line == '\n') *line = '1';
-
+                  
             for (int i = 0; i < sizeof line; ++i) {
-                if (line[i] && !isdigit(line[i]) && line[i] != '\n') {
+                if (line[i] && *line == 'q'  && line[i] != '\n') {
+                       
                     fprintf(stderr, "[mii] Aborted by user!\n");
                     return -1;
                 }
             }
+             if (*line == 'n') 
+              {
+
+               fprintf(stderr,"[mii] Requesting new software!\n"); 
+               return -1;
+               }    
            
             int val = strtol(line, NULL, 10) - 1;
-
+            fprintf(stderr, "%d value entered\n", val);
             if (val < 0 || val >= res.num_results) {
                 fprintf(stderr, "[mii] Selection out of range! Aborting.\n");
                 return -1;
