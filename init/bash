@@ -15,9 +15,9 @@ THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # find the mii binary
 export MII="$THISDIR/../../../bin/mii"
-
+condaenv_path=$HOME/.conda/envs/*/bin
 # prepend the path with the mii bin directory
-export PATH=$THISDIR/../../../bin:$PATH
+export PATH=$THISDIR/../../../bin:$condaenv_path:$PATH
 
 if [ ! -x "$MII" ]; then
     echo "[mii] Couldn't find the mii binary (tried $MII). Disabling!" 1>&2
